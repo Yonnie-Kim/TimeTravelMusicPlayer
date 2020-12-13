@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Time Travel Music Player</title>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <!-- google font  -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=Noto+Sans+KR:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      function read_infos() {
+        $.ajax({
+          type: "GET",
+          url: "/tracks",
+          data: {},
+          success: function (response) {
+            // /tracks에 있는 정보 받아와서 변수 처리, body에서 보여주기
+            let tracks = response["tracks"];
+            for (let i = 0; i < tracks.length; i++) {
+              makeCard(
+                tracks[i]["track_title"],
+                tracks[i]["album_name"],
+                tracks[i]["album_image"],
+                tracks[i]["artist_name"],
+                tracks[i]["preview_url"]
+              );
+            }
+          },
+        });
+      }
+      function makeCard(
+        track_title,
+        album_name,
+        album_image,
+        artist_name,
+        preview_url
+      ) {
+        let tempHtml = `<div class="card">
+            <img class="card-img-top" src="${album_image}" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">${track_title}</h5>
+              <p class="card-text">${album_name} by ${artist_name}</p>
+              <audio controls="controls">
+                <source src="${preview_url}" type="audio/mp3"/>
+              </audio>  
+            </div>`;
+        $("tracks_info").append(tempHtml);
+      }
+    </script>
+
+    <!-- css -->
+    <style>
+      h1 {
+        font-family: "East Sea Dokdo", cursive;
+      }
+      * {
+        font-family: "Noto Sans KR", sans-serif;
+      }
+      .header {
+        width: 80%;
+        margin: 10px auto 30px auto;
+        align-items: center;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="header">
+        <h1>시간여행 플레이어</h1>
+      </div>
+      <div class="player">
+        <p>탐색버튼, onclick으로 음악 탐색 함수 실행</p>
+        <button type="button" class="btn btn-danger">Browse</button>
+        <div class="tracks_cards">
+          여기에 트랙정보 삽입
+          <div class="card-columns" id="tracks_info">
+            <div class="card">
+              <img
+                class="card-img-top"
+                src="https://i.scdn.co/image/ab67616d0000b27309fd83d32aee93dceba78517"
+                alt="Card image cap"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Snow (Hey Oh)</h5>
+                <p class="card-text">
+                  Stadium Arcadium by Red Hot Chili Peppers
+                </p>
+                <audio controls="controls">
+                  <source
+                    src="https://p.scdn.co/mp3-preview/bc8d37532bace773a946ed1ab59f4181e632d93a?cid=a618b89079584773b973a20f6009a5bd"
+                    type="audio/mp3"
+                  />
+                </audio>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
