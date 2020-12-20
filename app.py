@@ -21,23 +21,12 @@ def home():
 
 @app.route('/tracks')
 def search_tracks():
-    # n = 15  # 나중에 index에서 숫자 변수 받아올 자리
-    results = spotify.search(q='snow',
+    # n = 15  # 나중에 index에서 숫자 변수(n년전) 받아올 자리
+    # 쿼리조건 뭐 넣을지..수정필요!!
+    results = spotify.search(q='Christmas',
                              type='track', limit=5)
     return results
-    # 내가 필요한 정보들 list로 만들어서 html로 보내기 -- 일단은 한개만
-    result = results[0]
-    # for result in results:
-    track_title = result['tracks']['items']['name']
-    album_name = result['tracks']['items']['album']['name']
-    album_image = result['tracks']['items']['album']['images'][0]['url']
-    artist_name = result['tracks']['items']['artists']['name']
-    preview_url = result['tracks']['items']['preview_url']
-
-    track_info = {'title': track_title, 'artist': artist_name, 'album': album_name,
-                  'album image': album_image, 'preview': preview_url}
-
-    return jsonify({'result': 'success', 'tracks': track_info})
+    return jsonify({'result': 'success', 'tracks': results})
 
 
 if __name__ == '__main__':
