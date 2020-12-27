@@ -25,30 +25,46 @@
       rel="stylesheet"
     />
     <script>
-      function read_infos() {
-        $.ajax({
-          type: "GET",
-          url: "/tracks",
-          data: {},
-          success: function (response) {
-            // /tracks에 있는 정보 받아와서 변수 처리, body에서 보여주기
-            let tracks = response["tracks"]["items"];
-            for (let i = 0; i < tracks.length; i++) {
-              let track_title = tracks[i]["name"];
-              let album_name = tracks[i]["album"]["name"];
-              let album_image = tracks[i]["album"]["images"][0]["url"];
-              let artist_name = tracks[i]["artists"][0]["name"];
-              let preview_url = tracks[i]["preview_url"];
-              make_card(
-                track_title,
-                album_name,
-                album_image,
-                artist_name,
-                preview_url
-              );
-            }
-          },
-        });
+      function search_tracks() {
+        if ($("#input_area").css("display") !== "none") {
+          $("#tracks_info").empty();
+          $("#result_year").empty();
+
+          let input_years = $("#input_years").val();
+          let input_keyword = $("#input_keyword").val();
+          let past_year = 2020 - input_years;
+          $("#result_year").append(past_year);
+          $("#result_line").show();
+          $("#input_area").hide();
+          $("#browse_button").text("Browse again");
+
+          $.ajax({
+            type: "POST",
+            url: "/tracks",
+            data: { past_year: past_year, keyword: input_keyword },
+            success: function (response) {
+              console.log("Request URL: " + response["tracks"]["href"]);
+              let tracks = response["tracks"]["items"];
+              for (let i = 0; i < tracks.length; i++) {
+                let track_title = tracks[i]["name"];
+                let album_name = tracks[i]["album"]["name"];
+                let album_image = tracks[i]["album"]["images"][0]["url"];
+                let artist_name = tracks[i]["artists"][0]["name"];
+                let preview_url = tracks[i]["preview_url"];
+                make_card(
+                  track_title,
+                  album_name,
+                  album_image,
+                  artist_name,
+                  preview_url
+                );
+              }
+            },
+          });
+        } else {
+          $("#input_area").show();
+          $("#browse_button").text("Browse");
+        }
       }
       function make_card(
         track_title,
@@ -88,11 +104,25 @@
       * {
         font-family: "Noto Sans KR", sans-serif;
       }
+      .wrap {
+        margin: 2px;
+      }
       .header {
         width: 80%;
         margin: 30px auto 30px auto;
         align-items: center;
         text-align: center;
+      }
+      .input {
+        margin: 5px;
+      }
+      .result_area {
+        align-items: center;
+        text-align: center;
+      }
+      #result_line,
+      #result_year {
+        font-family: "East Sea Dokdo", cursive;
       }
     </style>
   </head>
@@ -100,13 +130,36 @@
     <div class="wrap">
       <div class="header">
         <h1>🚀시간여행 플레이어</h1>
-        <button type="button" class="btn btn-danger" onclick="read_infos()">
-          Browse
-        </button>
+
+        <div class="search_area">
+          <div id="input_area">
+            <div class="input">
+              <label for="input_years">몇 년 전으로 떠나실래요?</label>
+              <input type="number" id="input_years" />
+            </div>
+            <div class="input">
+              <label for="input_keyword">어떤 음악을 좋아하세요?</label>
+              <input type="text" id="input_keyword" />
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-danger"
+            id="browse_button"
+            onclick="search_tracks()"
+          >
+            Browse
+          </button>
+        </div>
       </div>
-      <div class="player">
-        <div class="tracks_cards">
-          <div class="card-columns" id="tracks_info"></div>
+      <div class="result_area">
+        <h3 id="result_line" style="display: none">
+          Back to <span id="result_year"></span>
+        </h3>
+        <div class="player">
+          <div class="tracks_cards">
+            <div class="card-columns" id="tracks_info"></div>
+          </div>
         </div>
       </div>
     </div>

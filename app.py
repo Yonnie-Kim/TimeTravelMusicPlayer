@@ -1,5 +1,6 @@
-import pprint
 import spotipy
+import requests
+import urllib
 from spotipy.oauth2 import SpotifyClientCredentials
 from flask import Flask, render_template, jsonify, request
 
@@ -19,12 +20,12 @@ def home():
     return render_template('index.html')
 
 
-@app.route('/tracks')
+@app.route('/tracks', methods=['POST'])
 def search_tracks():
-    # n = 15  # 나중에 index에서 숫자 변수(n년전) 받아올 자리
-    # 쿼리조건 뭐 넣을지..수정필요!!
-    results = spotify.search(q='Christmas',
-                             type='track', limit=5)
+    past_year = request.form['past_year']
+    keyword = request.form['keyword']
+    query = keyword + ' year:' + str(past_year)
+    results = spotify.search(q=query, type='track', limit=5)
     return results
     return jsonify({'result': 'success', 'tracks': results})
 
